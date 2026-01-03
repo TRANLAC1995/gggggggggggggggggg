@@ -1,0 +1,138 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nghị quyết - Tiểu đoàn 303</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:Arial,sans-serif;padding:20px;}
+header{
+  background:rgba(255,255,255,.9);
+  padding:15px;
+  text-align:center;
+  border-radius:0 0 20px 20px;
+  box-shadow:0 4px 10px rgba(0,0,0,.4);
+  position:fixed;
+  top:0;
+  width:100%;
+  z-index:1000;
+}
+header h1{color:#007bff;margin-bottom:10px;}
+header button{margin:3px;padding:8px 12px;border:none;border-radius:8px;cursor:pointer;background:#1e3c72;color:#fff;}
+section{max-width:900px;margin:120px auto 40px;}
+.card{background:rgba(255,255,255,.65);padding:25px;margin:20px 0;border-radius:20px;box-shadow:0 6px 15px rgba(0,0,0,.3);}
+.editable[contenteditable="true"]{outline:2px dashed red;background:#fff8c6;}
+</style>
+</head>
+<body>
+
+<header>
+  <h1 class="editable" data-key="title-main">📜 Nghị quyết lãnh đạo</h1>
+  <button onclick="adminLogin()">🔐 Quản trị</button>
+  <button id="editBtn" onclick="toggleEdit()" style="display:none">✏️ Chỉnh sửa</button>
+  <button id="saveBtn" onclick="saveContent()" style="display:none">💾 Lưu</button>
+  <button id="logoutBtn" onclick="logoutAdmin()" style="display:none">🚪 Thoát</button>
+</header>
+
+<section>
+  <div class="card">
+    <h2 class="editable" data-key="part1-title">I. ĐÁNH GIÁ TÌNH HÌNH</h2>
+    <p class="editable" data-key="part1-text">Trong thời gian qua, đơn vị đã quán triệt và triển khai thực hiện nghiêm các nghị quyết, chỉ thị của cấp trên.</p>
+    <p class="editable" data-key="part1-text2">Tuy nhiên vẫn còn một số hạn chế như: việc nắm bắt, quản lý tư tưởng bộ đội chưa kịp thời.</p>
+  </div>
+  <div class="card">
+    <h2 class="editable" data-key="part2-title">II. NHIỆM VỤ TRỌNG TÂM</h2>
+    <ul>
+      <li class="editable" data-key="part2-li1">Tiếp tục quán triệt sâu sắc nghị quyết, chỉ thị của các cấp.</li>
+      <li class="editable" data-key="part2-li2">Nâng cao chất lượng huấn luyện, sẵn sàng chiến đấu.</li>
+      <li class="editable" data-key="part2-li3">Tăng cường công tác giáo dục chính trị, tư tưởng.</li>
+      <li class="editable" data-key="part2-li4">Giữ vững kỷ luật, kỷ cương, xây dựng đơn vị vững mạnh toàn diện.</li>
+    </ul>
+  </div>
+  <div class="card">
+    <h2 class="editable" data-key="part3-title">III. GIẢI PHÁP THỰC HIỆN</h2>
+    <ul>
+      <li class="editable" data-key="part3-li1">Duy trì nghiêm nền nếp sinh hoạt Đảng, sinh hoạt chính trị.</li>
+      <li class="editable" data-key="part3-li2">Phát huy vai trò, trách nhiệm của đội ngũ cán bộ các cấp.</li>
+      <li class="editable" data-key="part3-li3">Tăng cường kiểm tra, giám sát việc thực hiện nghị quyết.</li>
+      <li class="editable" data-key="part3-li4">Đẩy mạnh ứng dụng công nghệ thông tin trong công tác quản lý, điều hành.</li>
+    </ul>
+  </div>
+  <div class="card">
+    <h2 class="editable" data-key="part4-title">IV. TỔ CHỨC THỰC HIỆN</h2>
+    <p class="editable" data-key="part4-text">Cấp ủy, chỉ huy các cấp có trách nhiệm cụ thể hóa nghị quyết thành chương trình, kế hoạch hành động phù hợp.</p>
+  </div>
+</section>
+
+<div style="text-align:center; margin:30px 0;">
+  <button onclick="window.location.href='bao-cao-cap-tren.html'" style="background:#1e3c72;color:#fff;border:none;padding:10px 18px;border-radius:12px;cursor:pointer;font-size:0.95rem;">⬅ Quay lại</button>
+</div>
+
+<script>
+const ADMIN_PASSWORD = "303qd";
+let isAdmin = false;
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxbV0PoGy2cK-z2rxPemauFRdMG5Ok_4aa9NxYvFUveUrBJ25Rx-O8tDCSbzsqnnjtW/exec";
+
+const editBtn = document.getElementById("editBtn");
+const saveBtn = document.getElementById("saveBtn");
+const logoutBtn = document.getElementById("logoutBtn");
+
+function adminLogin() {
+  const pass = prompt("Nhập mật khẩu quản trị:");
+  if (pass === ADMIN_PASSWORD) {
+    isAdmin = true;
+    editBtn.style.display = saveBtn.style.display = logoutBtn.style.display = "inline-block";
+    alert("✅ Đã vào chế độ quản trị");
+  }
+}
+
+function toggleEdit() {
+  if (!isAdmin) return;
+  document.querySelectorAll(".editable").forEach(el => {
+    el.contentEditable = el.contentEditable !== "true";
+  });
+}
+
+async function saveContent() {
+  if (!isAdmin) return;
+  const data = {};
+  document.querySelectorAll(".editable").forEach(el => {
+    data[el.dataset.key] = el.innerHTML;
+  });
+  try {
+    await fetch(SCRIPT_URL, {
+      method: "POST",
+      body: JSON.stringify(data)
+    });
+    alert("💾 Đã lưu nội dung lên Google Sheet");
+  } catch (err) {
+    alert("❌ Lỗi lưu: " + err.message);
+  }
+}
+
+async function loadContent() {
+  try {
+    const res = await fetch(SCRIPT_URL);
+    const data = await res.json();
+    document.querySelectorAll(".editable").forEach(el => {
+      if (data[el.dataset.key]) el.innerHTML = data[el.dataset.key];
+    });
+  } catch (err) {
+    console.error("Lỗi tải dữ liệu:", err);
+  }
+}
+
+function logoutAdmin() {
+  isAdmin = false;
+  document.querySelectorAll(".editable").forEach(el => {
+    el.contentEditable = false;
+  });
+  editBtn.style.display = saveBtn.style.display = logoutBtn.style.display = "none";
+}
+
+window.onload = loadContent;
+</script>
+
+</body>
+</html>
